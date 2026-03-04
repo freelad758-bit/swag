@@ -3,103 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SWAGA App</title>
-    <!-- Подключаем SDK Telegram -->
+    <title>SWAGA ELITE</title>
+    <!-- SDK Telegram -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Tailwind для стилей -->
+    <!-- Стили Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getFirestore, doc, setDoc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+        // Конфигурация Firebase (заполняется автоматически средой)
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'swaga-app';
+
+        let currentUser = null;
+        let hasVoted = false;
+
+        // Элементы интерфейса
+        const nameEl = document.getElementById('user-name');
+        const avaEl = document.getElementById('user-ava');
+        const pollContainer = document.getElementById('poll-container');
+
+        // Инициализация Telegram
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+        tg.setHeaderColor('#050505');
+
+        // Логика авторизации и данных
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                await signInAnonymously(auth);
+                return;
+            }
+            currentUser = user;
+            initApp();
+        });
+
+        async function initApp() {
+            const tgUser = tg.initDataUnsafe?.user;
+            if (tgUser) {
+                nameEl.innerText = tgUser.first_name.toUpperCase();
+                avaEl.innerText = tgUser.first_name.charAt(0).toUpperCase();
+            }
+
+            // Слушаем глобальные голоса
+            const votesRef = doc(db, 'artifacts', appId, 'public', 'data', 'global_votes');
+            onSnapshot(votesRef, (snap) => {
+                const data = snap.exists() ? snap.data() : { opt1: 0, opt2: 0 };
+                updateUI(data);
+            });
+
+            // Проверяем, голосовал ли юзер
+            const userRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'settings');
+            const userSnap = await getDoc(userRef);
+            if (userSnap.exists()) {
+                hasVoted = true;
+                markAsVoted(userSnap.data().choice);
+            }
+        }
+
+        window.vote = async (choice) => {
+            if (hasVoted || !currentUser) return;
+            
+            tg.HapticFeedback.impactOccurred('medium');
+            hasVoted = true;
+
+            const votesRef = doc(db, 'artifacts', appId, 'public', 'data', 'global_votes');
+            const snap = await getDoc(votesRef);
+            const data = snap.exists() ? snap.data() : { opt1: 0, opt2: 0 };
+            
+            data[choice] = (data[choice] || 0) + 1;
+            
+            // Сохраняем везде
+            await setDoc(votesRef, data);
+            await setDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'settings'), { choice });
+            
+            markAsVoted(choice);
+        };
+
+        function updateUI(data) {
+            const total = data.opt1 + data.opt2;
+            const p1 = total === 0 ? 0 : Math.round((data.opt1 / total) * 100);
+            const p2 = total === 0 ? 0 : Math.round((data.opt2 / total) * 100);
+
+            document.getElementById('bar1').style.width = p1 + '%';
+            document.getElementById('bar2').style.width = p2 + '%';
+            document.getElementById('perc1').innerText = p1 + '%';
+            document.getElementById('perc2').innerText = p2 + '%';
+        }
+
+        function markAsVoted(choice) {
+            document.querySelectorAll('.vote-btn').forEach(btn => {
+                btn.classList.add('opacity-50', 'cursor-default');
+                btn.onclick = null;
+            });
+            const activeBtn = document.getElementById('btn-' + choice);
+            activeBtn.style.borderColor = '#00ff88';
+            activeBtn.classList.remove('opacity-50');
+            document.getElementById('voted-msg').classList.remove('hidden');
+        }
+    </script>
     <style>
-        :root {
-            --bg: #000000;
-            --accent: #00ff88;
+        body { background-color: #050505; color: white; font-family: sans-serif; }
+        .bg-glow {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% -10%, rgba(0, 255, 136, 0.1) 0%, transparent 60%);
+            z-index: -1;
         }
-        body {
-            background-color: var(--bg);
-            color: white;
-            font-family: system-ui, -apple-system, sans-serif;
-            margin: 0;
-            padding: 0;
+        .neo-card {
+            background: linear-gradient(145deg, #111, #080808);
+            border: 1px solid rgba(255,255,255,0.05);
         }
-        .main-container {
-            padding-bottom: 120px; /* Отступ под меню */
-        }
-        .nav-bar {
-            position: fixed;
-            bottom: 30px;
-            left: 15px;
-            right: 15px;
-            background: rgba(20, 20, 20, 0.9);
+        .nav-lift {
+            position: fixed; bottom: 40px; left: 20px; right: 20px;
+            background: rgba(15, 15, 15, 0.9);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(0, 255, 136, 0.3);
-            border-radius: 20px;
-            display: flex;
-            justify-content: space-around;
-            padding: 15px;
-            z-index: 9999;
-        }
-        .card-custom {
-            background: linear-gradient(145deg, #121212, #080808);
-            border-left: 4px solid var(--accent);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            z-index: 100;
         }
     </style>
 </head>
-<body>
-    <div class="main-container p-5">
-        <!-- Шапка -->
-        <div class="flex items-center justify-between mb-8 pt-4">
-            <div class="flex items-center gap-3">
-                <div id="u-avatar" class="w-12 h-12 bg-zinc-900 border border-emerald-500 rounded-full flex items-center justify-center text-emerald-500 font-bold italic shadow-[0_0_10px_rgba(0,255,136,0.2)]">?</div>
-                <div>
-                    <h1 id="u-name" class="font-black uppercase italic text-xl tracking-tighter">SWAGA</h1>
-                    <p class="text-[9px] text-emerald-500 font-mono tracking-widest uppercase">Система в норме</p>
-                </div>
+<body class="p-6">
+    <div class="bg-glow"></div>
+
+    <!-- Header -->
+    <header class="flex items-center justify-between mb-10 pt-2">
+        <div class="flex items-center gap-4">
+            <div id="user-ava" class="w-14 h-14 rounded-2xl bg-zinc-900 border border-emerald-500/30 flex items-center justify-center text-emerald-500 font-black italic text-2xl shadow-lg shadow-emerald-500/10">?</div>
+            <div>
+                <h1 id="user-name" class="text-xl font-black uppercase italic tracking-tighter">SWAGA</h1>
+                <p class="text-[9px] text-emerald-500 font-mono tracking-[0.3em] uppercase">Status: Online</p>
             </div>
         </div>
+    </header>
 
-        <!-- Лента новостей -->
-        <div class="space-y-4">
-            <div class="card-custom p-5 rounded-xl" onclick="tg.showAlert('Сбор в группе через час!')">
-                <span class="text-[10px] text-emerald-500 font-bold uppercase">Объявление</span>
-                <h3 class="font-bold text-lg mt-1 uppercase">Вечерний движ</h3>
-                <p class="text-sm text-zinc-400 mt-2">Сегодня решаем важные вопросы в чате. Не пропусти.</p>
-            </div>
-
-            <div class="card-custom p-5 rounded-xl" onclick="tg.showAlert('Правила обновлены в закрепе')">
-                <span class="text-[10px] text-zinc-500 font-bold uppercase">Инфо</span>
-                <h3 class="font-bold text-lg mt-1 uppercase">Наш устав</h3>
-                <p class="text-sm text-zinc-400 mt-2">Коротко о том, как не вылететь из группы за 5 минут.</p>
-            </div>
+    <!-- Info Card -->
+    <div class="neo-card p-6 rounded-[32px] mb-10">
+        <div class="flex items-center gap-2 mb-3">
+            <span class="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></span>
+            <span class="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">Объявление</span>
         </div>
+        <h2 class="text-2xl font-black italic mb-2 tracking-tight">ДВИЖЕНИЕ ЖИВО</h2>
+        <p class="text-xs text-zinc-500 leading-relaxed">Система голосования теперь работает через базу. Твой выбор останется в истории группы навсегда.</p>
     </div>
 
-    <!-- Навигация -->
-    <nav class="nav-bar">
-        <button onclick="location.reload()" class="text-emerald-500 flex flex-col items-center">
+    <!-- Voting Section -->
+    <div class="mb-10">
+        <h3 class="text-[10px] font-black uppercase text-zinc-600 tracking-[0.4em] mb-4 px-1">Голосование</h3>
+        <div class="space-y-4" id="poll-container">
+            <!-- Option 1 -->
+            <button id="btn-opt1" onclick="vote('opt1')" class="vote-btn relative w-full h-16 rounded-2xl bg-zinc-900 border border-white/5 overflow-hidden active:scale-[0.98] transition-all">
+                <div id="bar1" class="absolute top-0 left-0 h-full bg-emerald-500/10 transition-all duration-1000" style="width: 0%"></div>
+                <div class="relative z-10 flex justify-between px-6 items-center">
+                    <span class="text-sm font-bold uppercase">Зайти в Discord</span>
+                    <span id="perc1" class="font-mono text-emerald-500 font-black">0%</span>
+                </div>
+            </button>
+            <!-- Option 2 -->
+            <button id="btn-opt2" onclick="vote('opt2')" class="vote-btn relative w-full h-16 rounded-2xl bg-zinc-900 border border-white/5 overflow-hidden active:scale-[0.98] transition-all">
+                <div id="bar2" class="absolute top-0 left-0 h-full bg-emerald-500/10 transition-all duration-1000" style="width: 0%"></div>
+                <div class="relative z-10 flex justify-between px-6 items-center">
+                    <span class="text-sm font-bold uppercase">Сидеть в TG</span>
+                    <span id="perc2" class="font-mono text-emerald-500 font-black">0%</span>
+                </div>
+            </button>
+        </div>
+        <p id="voted-msg" class="hidden text-center text-[10px] text-emerald-500/50 mt-4 uppercase font-bold tracking-widest">Твой выбор зафиксирован</p>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav-lift rounded-2xl p-4 flex justify-around shadow-2xl">
+        <button onclick="location.reload()" class="flex flex-col items-center text-emerald-500">
             <span class="text-xl">🏠</span>
             <span class="text-[9px] font-bold uppercase mt-1">База</span>
         </button>
-        <button onclick="tg.showAlert('Раздел скоро будет')" class="text-zinc-500 flex flex-col items-center">
+        <button onclick="tg.showAlert('Раздел скоро подлетит.')" class="flex flex-col items-center text-zinc-500">
             <span class="text-xl">⚔️</span>
             <span class="text-[9px] font-bold uppercase mt-1">Дело</span>
         </button>
-        <button onclick="tg.close()" class="text-zinc-500 flex flex-col items-center">
+        <button onclick="tg.close()" class="flex flex-col items-center text-zinc-500">
             <span class="text-xl">🚪</span>
             <span class="text-[9px] font-bold uppercase mt-1">Выход</span>
         </button>
     </nav>
-
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
-        tg.setHeaderColor('#000000');
-
-        const user = tg.initDataUnsafe?.user;
-        if (user) {
-            document.getElementById('u-name').innerText = user.first_name.toUpperCase();
-            document.getElementById('u-avatar').innerText = user.first_name.charAt(0).toUpperCase();
-        }
-    </script>
 </body>
 </html>
-

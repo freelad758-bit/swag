@@ -2,279 +2,328 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SWAGA GOLD OS</title>
-    <!-- Telegram SDK -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XPNet VPN - Mochi Aesthetic Edition</title>
     <style>
         :root {
-            --gold: #ffcc00;
-            --glass: rgba(255, 255, 255, 0.01);
-            --border: rgba(255, 204, 0, 0.25);
+            --bg-dark: #0a0a0a;
+            --card-bg: rgba(26, 26, 26, 0.85);
+            --accent-blue: #00aaff;
+            --accent-green: #00ff88;
+            --accent-orange: #ffaa00;
+            --text-main: #ffffff;
+            --text-dim: #a0a0a0;
+            --mochi-pink: #ffb7c5;
         }
 
-        body {
-            background: #000;
-            color: #fff;
-            font-family: -apple-system, system-ui, sans-serif;
-            margin: 0; padding: 0;
-            height: 100vh;
-            overflow: hidden;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* Настоящие жидкие золотые обои на CSS (без внешних ссылок) */
-        .wallpaper {
+        /* Эстетический фон Моти */
+       .mochi-bg {
             position: fixed;
-            inset: 0;
-            z-index: -10;
-            background: 
-                radial-gradient(circle at 20% 20%, rgba(255, 204, 0, 0.15) 0%, transparent 40%),
-                radial-gradient(circle at 80% 80%, rgba(255, 100, 0, 0.1) 0%, transparent 40%),
-                linear-gradient(135deg, #0f0c00 0%, #1a1600 50%, #080700 100%);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.shutterstock.com/search/background-mochi'); /* Замените на реальный URL моти */
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+            opacity: 0.4; /* Прозрачность для сохранения читаемости */
+            filter: blur(2px);
         }
 
-        /* Эффект жидкого стекла */
-        .liquid-glass {
-            background: var(--glass);
-            backdrop-filter: blur(40px) saturate(180%) brightness(120%);
-            -webkit-backdrop-filter: blur(40px) saturate(180%) brightness(120%);
-            border: 1px solid var(--border);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(255, 204, 0, 0.1);
+       .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
-        .page {
-            display: none;
-            height: calc(100vh - 160px);
-            overflow-y: auto;
-            padding: 24px;
-            animation: fadeIn 0.2s ease-out;
+        /* Шапка */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
         }
 
-        .page.active { display: block; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.98); }
-            to { opacity: 1; transform: scale(1); }
+       .logo {
+            display: flex;
+            align-items: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--accent-blue);
         }
 
-        .nav-item {
-            color: #666;
-            transition: all 0.3s;
+       .logo-icon {
+            margin-right: 10px;
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--accent-blue);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .nav-item.active {
-            color: var(--gold);
-            text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+       .menu-btn {
+            background: var(--card-bg);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 8px;
+            cursor: pointer;
         }
 
-        /* Чат */
-        .idea-bubble {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 18px;
-            padding: 14px;
-            margin-bottom: 12px;
-            border-left: 2px solid var(--gold);
+        /* Системные настройки */
+       .system-settings {
+            margin-bottom: 30px;
         }
 
-        .amber-shimmer {
-            background: linear-gradient(90deg, #ffcc00, #fff, #ffcc00);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shimmer 4s linear infinite;
+       .setting-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #222;
+            color: var(--text-dim);
         }
 
-        @keyframes shimmer { to { background-position: 200% center; } }
+        /* Блок подписки */
+       .subscription-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+       .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+       .btn-action {
+            flex: 1;
+            background: var(--card-bg);
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 12px;
+            color: var(--text-main);
+            text-align: center;
+            font-size: 14px;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Сетка карточек */
+       .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+       .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+       .card-label {
+            color: var(--text-dim);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+       .card-value {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+       .status-active { color: var(--accent-green); }
+       .user-name { color: var(--accent-blue); }
+       .traffic-icon { color: var(--accent-orange); }
+
+        /* Руководство */
+       .guide-section {
+            margin-top: 40px;
+        }
+
+       .guide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+       .platform-select {
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+       .app-list {
+            display: flex;
+            gap: 15px;
+        }
+
+       .app-card {
+            flex: 1;
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 2px solid transparent;
+        }
+
+       .app-card.active {
+            border-color: var(--accent-blue);
+        }
+
+       .app-icon {
+            width: 40px;
+            height: 40px;
+            background: #333;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+       .app-info h4 {
+            margin: 0;
+            font-size: 14px;
+        }
+
+       .app-info p {
+            margin: 0;
+            font-size: 11px;
+            color: var(--text-dim);
+        }
+
+       .badge-new {
+            background: var(--accent-blue);
+            color: white;
+            font-size: 9px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
     </style>
 </head>
 <body>
-    <div class="wallpaper"></div>
 
-    <!-- HEADER -->
-    <header class="flex items-center p-6 gap-4">
-        <div class="w-12 h-12 rounded-full border border-amber-500/30 p-0.5">
-            <img id="user-ava" src="" class="w-full h-full rounded-full object-cover hidden">
-            <div id="user-stub" class="w-full h-full rounded-full bg-zinc-900 flex items-center justify-center text-amber-500 font-black">?</div>
-        </div>
-        <div>
-            <h1 class="text-xl font-black italic amber-shimmer tracking-tighter uppercase" id="display-name">SWAGA GOLD</h1>
-            <p class="text-[9px] uppercase tracking-[0.4em] text-amber-500/40">Elite Protocol v6.0</p>
-        </div>
-    </header>
+    <div class="mochi-bg"></div>
 
-    <!-- ТАБЫ -->
-    <div id="home" class="page active">
-        <div class="liquid-glass p-6 rounded-[32px]">
-            <h2 class="text-amber-500 font-black text-[10px] uppercase tracking-[0.4em] mb-4">Золотой Устав</h2>
-            <div class="space-y-4 text-sm text-zinc-300 leading-relaxed">
-                <p>🚫 <strong class="text-white">ПОЛИТИКА:</strong> Полный запрет. Мы здесь ради мочи и золота, а не ради споров.</p>
-                <p>🥃 <strong class="text-white">БРАТСТВО:</strong> Группа — это семья. Относись к каждому как к равному.</p>
-                <p>💎 <strong class="text-white">ИДЕИ:</strong> Твои мысли формируют будущее системы. Пиши в чат.</p>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">🛡️</div>
+                XPNet
+            </div>
+            <div class="menu-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                    <rect y="4" width="24" height="2" rx="1"/>
+                    <rect y="11" width="24" height="2" rx="1"/>
+                    <rect y="18" width="24" height="2" rx="1"/>
+                </svg>
+            </div>
+        </header>
+
+        <div class="system-settings">
+            <div class="setting-item">
+                <span>Поддержка</span>
+            </div>
+            <div class="setting-item">
+                <span>🌓 Системная</span>
+                <span>▼</span>
+            </div>
+            <div class="setting-item">
+                <span>🌐 Русский</span>
+                <span>▼</span>
             </div>
         </div>
-    </div>
 
-    <div id="brigada" class="page">
-        <div class="space-y-3">
-            <div class="liquid-glass p-5 rounded-2xl flex justify-between items-center">
-                <span class="font-bold italic text-sm">@Admin_Root</span>
-                <span class="text-[8px] border border-amber-500/30 text-amber-500 px-2 py-0.5 rounded uppercase">Boss</span>
+        <div class="subscription-title">Подписка</div>
+        
+        <div class="action-buttons">
+            <div class="btn-action">🔳 QR-код</div>
+            <div class="btn-action">🔗 Скопировать ссылку</div>
+        </div>
+
+        <div class="info-grid">
+            <div class="card">
+                <div class="card-label">👤 Имя</div>
+                <div class="card-value user-name">SnFDbXAN</div>
             </div>
-            <div class="liquid-glass p-5 rounded-2xl flex justify-between items-center opacity-60">
-                <span class="font-bold italic text-sm">@User_Dev</span>
-                <span class="text-[8px] border border-zinc-700 text-zinc-500 px-2 py-0.5 rounded uppercase">Elite</span>
+            <div class="card">
+                <div class="card-label">🟢 Статус</div>
+                <div class="card-value status-active">Активна</div>
+            </div>
+            <div class="card">
+                <div class="card-label">📅 Действует</div>
+                <div class="card-value">До 21.04.2026</div>
+            </div>
+            <div class="card">
+                <div class="card-label">
+                    <span class="traffic-icon">⇅</span> Трафик
+                </div>
+                <div class="card-value">46.93 GB / ∞</div>
             </div>
         </div>
-    </div>
 
-    <div id="ideas" class="page">
-        <div id="chat-feed" class="space-y-3 mb-20">
-            <div class="text-center py-10 text-zinc-600 text-[10px] uppercase tracking-widest">Связь с облаком установлена...</div>
-        </div>
-        <div class="fixed bottom-28 left-6 right-6 flex gap-2">
-            <div class="liquid-glass flex-1 rounded-2xl px-4 flex items-center border-amber-500/10">
-                <input type="text" id="idea-text" class="bg-transparent w-full h-12 text-sm outline-none placeholder-zinc-700" placeholder="Налей идею сюда...">
+        <div class="guide-section">
+            <div class="guide-header">
+                <h3>Руководство</h3>
+                <select class="platform-select">
+                    <option>🤖 Android</option>
+                    <option>🍎 iOS</option>
+                    <option>💻 Windows</option>
+                </select>
             </div>
-            <button onclick="publish()" class="w-12 h-12 bg-amber-500 rounded-2xl flex items-center justify-center shadow-[0_0_15px_rgba(255,204,0,0.3)] active:scale-90 transition-all">
-                🚀
-            </button>
-        </div>
-    </div>
-
-    <div id="profile" class="page">
-        <div class="liquid-glass p-10 rounded-[40px] text-center">
-            <div class="w-24 h-24 mx-auto mb-6 p-1 border-2 border-amber-500/50 rounded-[30px]">
-                <img id="p-ava" src="" class="w-full h-full rounded-[24px] object-cover hidden">
-                <div id="p-stub" class="w-full h-full rounded-[24px] bg-zinc-900 flex items-center justify-center text-4xl text-amber-500 font-black">?</div>
-            </div>
-            <h2 id="p-name" class="text-2xl font-black amber-shimmer">SWAGGER</h2>
-            <p id="p-user" class="text-[10px] text-zinc-500 uppercase tracking-[0.3em] mt-2">Elite Member</p>
-        </div>
-    </div>
-
-    <!-- NAV BAR -->
-    <nav class="fixed bottom-6 left-6 right-6 h-20 liquid-glass rounded-[32px] flex justify-around items-center z-[1000]">
-        <button onclick="tab('home')" id="nav-home" class="nav-item active flex flex-col items-center gap-1">
-            <span class="text-2xl">🏚️</span>
-            <span class="text-[8px] font-black uppercase">База</span>
-        </button>
-        <button onclick="tab('brigada')" id="nav-brigada" class="nav-item flex flex-col items-center gap-1">
-            <span class="text-2xl">👥</span>
-            <span class="text-[8px] font-black uppercase">Бригада</span>
-        </button>
-        <button onclick="tab('ideas')" id="nav-ideas" class="nav-item flex flex-col items-center gap-1">
-            <span class="text-2xl">💭</span>
-            <span class="text-[8px] font-black uppercase">Идеи</span>
-        </button>
-        <button onclick="tab('profile')" id="nav-profile" class="nav-item flex flex-col items-center gap-1">
-            <span class="text-2xl">🥃</span>
-            <span class="text-[8px] font-black uppercase">Твой</span>
-        </button>
-    </nav>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-
-        // Firebase
-        const firebaseConfig = JSON.parse(__firebase_config);
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'swaga-v6';
-
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
-
-        // Auth
-        signInAnonymously(auth);
-
-        // UI Logic
-        const user = tg.initDataUnsafe?.user;
-        if(user) {
-            const name = (user.first_name || 'SWAGGER').toUpperCase();
-            document.getElementById('display-name').innerText = name;
-            document.getElementById('p-name').innerText = name;
-            document.getElementById('p-user').innerText = user.username ? '@' + user.username : 'ID: ' + user.id;
             
-            if(user.photo_url) {
-                ['user-ava', 'p-ava'].forEach(id => {
-                    const el = document.getElementById(id);
-                    el.src = user.photo_url;
-                    el.classList.remove('hidden');
-                });
-                ['user-stub', 'p-stub'].forEach(id => document.getElementById(id).classList.add('hidden'));
-            } else {
-                const init = name.charAt(0);
-                document.getElementById('user-stub').innerText = init;
-                document.getElementById('p-stub').innerText = init;
-            }
-        }
+            <p style="color: var(--text-dim); font-size: 12px; margin-bottom: 15px;">ВЫБЕРИТЕ ПРИЛОЖЕНИЕ</p>
 
-        // Tab System (Workaround for Telegram freeze)
-        window.tab = (id) => {
-            if(window.Telegram) tg.HapticFeedback.impactOccurred('medium');
-            
-            // Hide all pages
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            
-            // Update Nav
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById('nav-' + id).classList.add('active');
-        };
-
-        // Realtime Ideas
-        const feed = document.getElementById('chat-feed');
-        const q = query(collection(db, 'artifacts', appId, 'public', 'data', 'wall'), orderBy('time', 'desc'));
-
-        onSnapshot(q, (snap) => {
-            feed.innerHTML = '';
-            if(snap.empty) {
-                feed.innerHTML = '<div class="text-center py-10 text-zinc-700 text-[10px] uppercase italic">Здесь будет твоя моча золотая...</div>';
-                return;
-            }
-            snap.forEach(doc => {
-                const d = doc.data();
-                const div = document.createElement('div');
-                div.className = 'idea-bubble';
-                div.innerHTML = `
-                    <div class="flex justify-between items-center mb-1 text-[10px] font-black uppercase italic">
-                        <span class="text-amber-500">@${d.author || 'anon'}</span>
-                        <span class="opacity-20">${d.time ? new Date(d.time.toDate()).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : ''}</span>
+            <div class="app-list">
+                <div class="app-card active">
+                    <div class="app-icon">H</div>
+                    <div class="app-info">
+                        <h4>HAPP</h4>
+                        <p>Быстрый и легкий...</p>
                     </div>
-                    <p class="text-[13px] text-zinc-100">${d.text}</p>
-                `;
-                feed.appendChild(div);
-            });
-        });
+                    <div style="color: var(--accent-blue); margin-left: auto;">✓</div>
+                </div>
 
-        // Publish
-        window.publish = async () => {
-            const inp = document.getElementById('idea-text');
-            const val = inp.value.trim();
-            if(!val) return;
+                <div class="app-card">
+                    <div class="app-icon">V2</div>
+                    <div class="app-info">
+                        <span class="badge-new">New</span>
+                        <h4>v2RayTun</h4>
+                        <p>Продвинутый клиент...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            if(window.Telegram) tg.HapticFeedback.notificationOccurred('success');
-            
-            try {
-                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'wall'), {
-                    text: val,
-                    author: user?.username || user?.first_name || 'Swagger',
-                    time: serverTimestamp()
-                });
-                inp.value = '';
-            } catch (e) {
-                console.error(e);
-            }
-        };
-    </script>
 </body>
 </html>
-

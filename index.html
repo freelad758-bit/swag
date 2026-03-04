@@ -1,182 +1,351 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Наше TG Сообщество - Mochi Style</title>
-    <style>
-        :root {
-            --glass: rgba(255, 255, 255, 0.1);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --accent-pink: #ffb7c5;
-            --accent-blue: #a2d2ff;
-            --text: #ffffff;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Community PRO</title>
 
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-            background: #121212;
-            color: var(--text);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-        /* Эстетичный фон с моти */
-       .background {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: url('https://images.shutterstock.com/search/background-mochi') center/cover no-repeat;
-            z-index: -1;
-            filter: brightness(0.5) blur(3px);
-            opacity: 0.6;
-        }
+<style>
+:root{
+--glass: rgba(255,255,255,0.12);
+--border: rgba(255,255,255,0.3);
+--glow: rgba(255,215,0,0.8);
+}
 
-       .container {
-            max-width: 600px;
-            width: 90%;
-            padding: 40px 0;
-            text-align: center;
-        }
+body{
+margin:0;
+font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+color:white;
+overflow-x:hidden;
+background:linear-gradient(135deg,#ffeb3b,#ffb300);
+}
 
-        header.logo {
-            width: 100px;
-            height: 100px;
-            background: var(--accent-pink);
-            border-radius: 30px;
-            margin: 0 auto 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
-            box-shadow: 0 10px 20px rgba(255, 183, 197, 0.3);
-        }
+/* Реальные обои */
+.background{
+position:fixed;
+width:100%;
+height:100%;
+background:url("https://images.unsplash.com/photo-1492724441997-5dc865305da7") center/cover no-repeat;
+filter:brightness(0.65) saturate(1.3);
+z-index:-1;
+}
 
-        h1 { font-size: 2rem; margin-bottom: 10px; }
-       .subtitle { color: #ccc; margin-bottom: 30px; }
+/* Плавное появление */
+@keyframes fadeIn{
+from{opacity:0;transform:translateY(15px);}
+to{opacity:1;transform:translateY(0);}
+}
 
-        /* Кнопки теперь работают как ссылки */
-       .main-btn {
-            display: inline-block;
-            background: var(--accent-blue);
-            color: #000;
-            padding: 15px 35px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: transform 0.2s, box-shadow 0.2s;
-            margin-bottom: 40px;
-        }
+.app{
+padding:20px;
+padding-bottom:120px;
+animation:fadeIn .6s ease;
+}
 
-       .main-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(162, 210, 255, 0.4);
-        }
+/* Liquid Glass */
+.glass{
+background:var(--glass);
+backdrop-filter:blur(40px);
+border-radius:25px;
+border:1px solid var(--border);
+box-shadow:0 0 50px var(--glow);
+padding:15px;
+margin-bottom:20px;
+transition:.3s;
+}
 
-        /* Сетка карточек для группы */
-       .rules-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
+.glass:hover{
+box-shadow:0 0 70px var(--glow);
+transform:translateY(-3px);
+}
 
-       .card {
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            border-radius: 20px;
-            text-align: left;
-        }
+/* Header */
+.header{
+display:flex;
+align-items:center;
+gap:15px;
+}
+.header img{
+width:75px;
+height:75px;
+border-radius:50%;
+border:2px solid white;
+}
 
-       .card h3 { margin: 0 0 10px 0; font-size: 1rem; color: var(--accent-pink); }
-       .card p { margin: 0; font-size: 0.85rem; line-height: 1.4; color: #eee; }
+/* Pages */
+.page{display:none;}
+.page.active{display:block;animation:fadeIn .4s ease;}
 
-        /* Виджет чата (Placeholder) */
-       .chat-widget {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            width: 60px;
-            height: 60px;
-            background: #0088cc; /* Цвет Telegram */
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-            z-index: 100;
-        }
+/* Member */
+.member{
+padding:12px;
+border-radius:15px;
+background:rgba(255,255,255,0.15);
+margin-bottom:10px;
+}
 
-       .chat-bubble {
-            position: fixed;
-            bottom: 95px;
-            right: 25px;
-            width: 250px;
-            background: white;
-            color: #333;
-            padding: 15px;
-            border-radius: 15px;
-            font-size: 0.9rem;
-            display: none; /* Появится при клике через JS */
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-    </style>
+/* Ideas */
+.idea{
+padding:12px;
+border-radius:15px;
+background:rgba(255,255,255,0.15);
+margin-bottom:12px;
+display:flex;
+flex-direction:column;
+gap:8px;
+transition:.2s;
+}
+.idea:hover{
+transform:scale(1.02);
+}
+
+.idea-top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+font-size:14px;
+opacity:.9;
+}
+
+.idea-actions button{
+margin-right:5px;
+padding:6px 10px;
+border:none;
+border-radius:12px;
+background:rgba(255,255,255,0.2);
+color:white;
+}
+
+/* Input */
+.idea-input{
+display:flex;
+gap:10px;
+}
+.idea-input input{
+flex:1;
+padding:12px;
+border:none;
+border-radius:15px;
+outline:none;
+}
+.idea-input button{
+padding:12px;
+border:none;
+border-radius:15px;
+background:rgba(255,255,255,0.25);
+color:white;
+}
+
+/* Bottom Nav */
+.bottom-nav{
+position:fixed;
+bottom:0;
+width:100%;
+display:flex;
+backdrop-filter:blur(50px);
+background:rgba(255,200,0,0.4);
+}
+.bottom-nav button{
+flex:1;
+padding:20px;
+border:none;
+background:rgba(255,255,255,0.15);
+color:white;
+font-size:16px;
+transition:.2s;
+}
+.bottom-nav button:hover{
+background:rgba(255,255,255,0.3);
+}
+
+/* Search */
+.search{
+padding:10px;
+border-radius:15px;
+border:none;
+width:100%;
+margin-bottom:10px;
+}
+</style>
 </head>
+
 <body>
 
-    <div class="background"></div>
+<div class="background"></div>
 
-    <div class="container">
-        <header>
-            <div class="logo">🍡</div>
-            <h1>Mochi Community</h1>
-            <p class="subtitle">Уютное место для общения и обмена идеями</p>
-            <a href="https://t.me/your_group" class="main-btn" target="_blank">Вступить в группу</a>
-        </header>
+<div class="app">
 
-        <div class="rules-grid">
-            <div class="card">
-                <h3>✨ Атмосфера</h3>
-                <p>Мы за доброе общение и взаимное уважение. Никакого токсика.</p>
-            </div>
-            <div class="card">
-                <h3>📢 Анонсы</h3>
-                <p>Узнавай о новых ивентах и обновлениях первым в нашем канале.</p>
-            </div>
-            <div class="card">
-                <h3>🤝 Саппорт</h3>
-                <p>Возник вопрос? Напиши в чат справа, и админы ответят.</p>
-            </div>
-            <div class="card">
-                <h3>🎨 Творчество</h3>
-                <p>Делись своими работами и получай фидбек от профи.</p>
-            </div>
-        </div>
-    </div>
+<header class="glass header">
+<img id="avatar">
+<div>
+<h2 id="name"></h2>
+<p id="username"></p>
+<p id="role"></p>
+</div>
+</header>
 
-    <div class="chat-bubble" id="chatBox">
-        👋 Привет! Напиши нам в Telegram, и мы ответим прямо здесь.
-    </div>
-    <div class="chat-widget" onclick="toggleChat()">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="white">
-            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM16.64 15.65C16.39 16.03 15.89 16.14 15.51 15.89L12 13.56L8.49 15.89C8.11 16.14 7.61 16.03 7.36 15.65C7.11 15.27 7.22 14.77 7.6 14.52L11.11 12.19L11.11 8C11.11 7.55 11.47 7.19 11.92 7.19C12.37 7.19 12.73 7.55 12.73 8L12.73 12.19L16.24 14.52C16.62 14.77 16.73 15.27 16.64 15.65Z"/>
-        </svg>
-    </div>
+<section id="home" class="page active">
+<h1>Дом</h1>
+<div class="glass">
+<h3>Устав</h3>
+<p>
+Политика запрещена.<br>
+Конфликты запрещены.<br>
+Оскорбления запрещены.<br>
+Идеи приветствуются.<br>
+Администрация модерирует контент.
+</p>
+</div>
+</section>
 
-    <script>
-        function toggleChat() {
-            const chat = document.getElementById('chatBox');
-            chat.style.display = chat.style.display === 'block'? 'none' : 'block';
-        }
-        
-        // Для реального чата вставьте сюда скрипт от Intergram или Elfsight
-        // window.intergramId = "YOUR_ID";
-    </script>
+<section id="members" class="page">
+<h1>Участники (<span id="memberCount"></span>)</h1>
+<div id="memberList"></div>
+</section>
+
+<section id="ideas" class="page">
+<h1>Идеи (<span id="ideaCount"></span>)</h1>
+
+<input class="search" placeholder="Поиск..." oninput="renderIdeas(this.value)">
+
+<div id="ideasList"></div>
+
+<div class="idea-input glass">
+<input type="text" id="ideaInput" placeholder="Напишите идею...">
+<button onclick="addIdea()">Отправить</button>
+</div>
+
+<div id="adminPanel"></div>
+
+</section>
+
+</div>
+
+<nav class="bottom-nav">
+<button onclick="showPage('home')">Дом</button>
+<button onclick="showPage('members')">Участники</button>
+<button onclick="showPage('ideas')">Идеи</button>
+<button onclick="tg.close()">Закрыть</button>
+</nav>
+
+<script>
+const tg = window.Telegram.WebApp;
+tg.expand();
+
+let currentUserId=null;
+let currentRole="Пользователь";
+
+/* Авторизация */
+if(tg.initDataUnsafe.user){
+const user=tg.initDataUnsafe.user;
+currentUserId=user.id;
+
+document.getElementById("name").textContent=user.first_name;
+document.getElementById("username").textContent="@"+(user.username||"unknown");
+document.getElementById("avatar").src=user.photo_url||"https://via.placeholder.com/70";
+
+/* Пример ролей */
+if(user.id===123456789){
+currentRole="Создатель";
+}
+document.getElementById("role").textContent="Роль: "+currentRole;
+}
+
+/* Навигация */
+function showPage(id){
+document.querySelectorAll(".page")
+.forEach(p=>p.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+}
+
+/* Участники */
+const members=[
+{name:"Admin",role:"Создатель"},
+{name:"Moderator",role:"Модератор"},
+{name:"User",role:"Пользователь"}
+];
+
+document.getElementById("memberCount").textContent=members.length;
+
+members.forEach(m=>{
+const div=document.createElement("div");
+div.className="member";
+div.textContent=m.name+" — "+m.role;
+document.getElementById("memberList").appendChild(div);
+});
+
+/* Идеи */
+function addIdea(){
+const input=document.getElementById("ideaInput");
+if(!input.value) return;
+
+let ideas=JSON.parse(localStorage.getItem("ideas")||"[]");
+
+ideas.push({
+id:Date.now(),
+user:currentUserId,
+text:input.value,
+likes:0,
+date:new Date().toLocaleString()
+});
+
+localStorage.setItem("ideas",JSON.stringify(ideas));
+input.value="";
+renderIdeas();
+}
+
+function renderIdeas(filter=""){
+let ideas=JSON.parse(localStorage.getItem("ideas")||"[]");
+
+if(filter){
+ideas=ideas.filter(i=>i.text.toLowerCase().includes(filter.toLowerCase()));
+}
+
+document.getElementById("ideaCount").textContent=ideas.length;
+
+const list=document.getElementById("ideasList");
+list.innerHTML="";
+
+ideas.sort((a,b)=>b.id-a.id);
+
+ideas.forEach(i=>{
+const div=document.createElement("div");
+div.className="idea";
+
+div.innerHTML=`
+<div class="idea-top">
+<span>${i.date}</span>
+<span>${i.likes} 👍</span>
+</div>
+<div>${i.text}</div>
+<div class="idea-actions">
+<button onclick="likeIdea(${i.id})">👍</button>
+${i.user===currentUserId ? `<button onclick="deleteIdea(${i.id})">Удалить</button>`:""}
+</div>
+`;
+
+list.appendChild(div);
+});
+}
+
+function likeIdea(id){
+let ideas=JSON.parse(localStorage.getItem("ideas")||"[]");
+ideas=ideas.map(i=>{if(i.id===id)i.likes++;return i;});
+localStorage.setItem("ideas",JSON.stringify(ideas));
+renderIdeas();
+}
+
+function deleteIdea(id){
+let ideas=JSON.parse(localStorage.getItem("ideas")||"[]");
+ideas=ideas.filter(i=>i.id!==id);
+localStorage.setItem("ideas",JSON.stringify(ideas));
+renderIdeas();
+}
+
+renderIdeas();
+</script>
 
 </body>
 </html>

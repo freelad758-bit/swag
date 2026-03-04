@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>SWAGA App</title>
+    <!-- Подключаем SDK Telegram -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Tailwind для стилей -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --bg: #000000;
+            --accent: #00ff88;
+        }
+        body {
+            background-color: var(--bg);
+            color: white;
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .main-container {
+            padding-bottom: 120px; /* Отступ под меню */
+        }
+        .nav-bar {
+            position: fixed;
+            bottom: 30px;
+            left: 15px;
+            right: 15px;
+            background: rgba(20, 20, 20, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-around;
+            padding: 15px;
+            z-index: 9999;
+        }
+        .card-custom {
+            background: linear-gradient(145deg, #121212, #080808);
+            border-left: 4px solid var(--accent);
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container p-5">
+        <!-- Шапка -->
+        <div class="flex items-center justify-between mb-8 pt-4">
+            <div class="flex items-center gap-3">
+                <div id="u-avatar" class="w-12 h-12 bg-zinc-900 border border-emerald-500 rounded-full flex items-center justify-center text-emerald-500 font-bold italic shadow-[0_0_10px_rgba(0,255,136,0.2)]">?</div>
+                <div>
+                    <h1 id="u-name" class="font-black uppercase italic text-xl tracking-tighter">SWAGA</h1>
+                    <p class="text-[9px] text-emerald-500 font-mono tracking-widest uppercase">Система в норме</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Лента новостей -->
+        <div class="space-y-4">
+            <div class="card-custom p-5 rounded-xl" onclick="tg.showAlert('Сбор в группе через час!')">
+                <span class="text-[10px] text-emerald-500 font-bold uppercase">Объявление</span>
+                <h3 class="font-bold text-lg mt-1 uppercase">Вечерний движ</h3>
+                <p class="text-sm text-zinc-400 mt-2">Сегодня решаем важные вопросы в чате. Не пропусти.</p>
+            </div>
+
+            <div class="card-custom p-5 rounded-xl" onclick="tg.showAlert('Правила обновлены в закрепе')">
+                <span class="text-[10px] text-zinc-500 font-bold uppercase">Инфо</span>
+                <h3 class="font-bold text-lg mt-1 uppercase">Наш устав</h3>
+                <p class="text-sm text-zinc-400 mt-2">Коротко о том, как не вылететь из группы за 5 минут.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Навигация -->
+    <nav class="nav-bar">
+        <button onclick="location.reload()" class="text-emerald-500 flex flex-col items-center">
+            <span class="text-xl">🏠</span>
+            <span class="text-[9px] font-bold uppercase mt-1">База</span>
+        </button>
+        <button onclick="tg.showAlert('Раздел скоро будет')" class="text-zinc-500 flex flex-col items-center">
+            <span class="text-xl">⚔️</span>
+            <span class="text-[9px] font-bold uppercase mt-1">Дело</span>
+        </button>
+        <button onclick="tg.close()" class="text-zinc-500 flex flex-col items-center">
+            <span class="text-xl">🚪</span>
+            <span class="text-[9px] font-bold uppercase mt-1">Выход</span>
+        </button>
+    </nav>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+        tg.setHeaderColor('#000000');
+
+        const user = tg.initDataUnsafe?.user;
+        if (user) {
+            document.getElementById('u-name').innerText = user.first_name.toUpperCase();
+            document.getElementById('u-avatar').innerText = user.first_name.charAt(0).toUpperCase();
+        }
+    </script>
+</body>
+</html>
+

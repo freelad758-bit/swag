@@ -3,327 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XPNet VPN - Mochi Aesthetic Edition</title>
+    <title>Наше TG Сообщество - Mochi Style</title>
     <style>
         :root {
-            --bg-dark: #0a0a0a;
-            --card-bg: rgba(26, 26, 26, 0.85);
-            --accent-blue: #00aaff;
-            --accent-green: #00ff88;
-            --accent-orange: #ffaa00;
-            --text-main: #ffffff;
-            --text-dim: #a0a0a0;
-            --mochi-pink: #ffb7c5;
+            --glass: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --accent-pink: #ffb7c5;
+            --accent-blue: #a2d2ff;
+            --text: #ffffff;
         }
 
-        body, html {
+        body {
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            background: #121212;
+            color: var(--text);
             min-height: 100vh;
-            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        /* Эстетический фон Моти */
-       .mochi-bg {
+        /* Эстетичный фон с моти */
+       .background {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('https://images.shutterstock.com/search/background-mochi'); /* Замените на реальный URL моти */
-            background-size: cover;
-            background-position: center;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://images.shutterstock.com/search/background-mochi') center/cover no-repeat;
             z-index: -1;
-            opacity: 0.4; /* Прозрачность для сохранения читаемости */
-            filter: blur(2px);
+            filter: brightness(0.5) blur(3px);
+            opacity: 0.6;
         }
 
        .container {
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 20px;
-            box-sizing: border-box;
+            max-width: 600px;
+            width: 90%;
+            padding: 40px 0;
+            text-align: center;
         }
 
-        /* Шапка */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-       .logo {
-            display: flex;
-            align-items: center;
-            font-size: 22px;
-            font-weight: bold;
-            color: var(--accent-blue);
-        }
-
-       .logo-icon {
-            margin-right: 10px;
-            width: 24px;
-            height: 24px;
-            border: 2px solid var(--accent-blue);
-            border-radius: 6px;
+        header.logo {
+            width: 100px;
+            height: 100px;
+            background: var(--accent-pink);
+            border-radius: 30px;
+            margin: 0 auto 20px;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 40px;
+            box-shadow: 0 10px 20px rgba(255, 183, 197, 0.3);
         }
 
-       .menu-btn {
-            background: var(--card-bg);
-            border: 1px solid #333;
-            border-radius: 8px;
-            padding: 8px;
-            cursor: pointer;
+        h1 { font-size: 2rem; margin-bottom: 10px; }
+       .subtitle { color: #ccc; margin-bottom: 30px; }
+
+        /* Кнопки теперь работают как ссылки */
+       .main-btn {
+            display: inline-block;
+            background: var(--accent-blue);
+            color: #000;
+            padding: 15px 35px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 40px;
         }
 
-        /* Системные настройки */
-       .system-settings {
-            margin-bottom: 30px;
+       .main-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(162, 210, 255, 0.4);
         }
 
-       .setting-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 15px 0;
-            border-bottom: 1px solid #222;
-            color: var(--text-dim);
-        }
-
-        /* Блок подписки */
-       .subscription-title {
-            font-size: 24px;
-            margin-bottom: 20px;
-            font-weight: 600;
-        }
-
-       .action-buttons {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-       .btn-action {
-            flex: 1;
-            background: var(--card-bg);
-            border: 1px solid #333;
-            border-radius: 12px;
-            padding: 12px;
-            color: var(--text-main);
-            text-align: center;
-            font-size: 14px;
-            backdrop-filter: blur(5px);
-        }
-
-        /* Сетка карточек */
-       .info-grid {
+        /* Сетка карточек для группы */
+       .rules-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(2, 1fr);
             gap: 15px;
-            margin-bottom: 30px;
         }
 
        .card {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-       .card-label {
-            color: var(--text-dim);
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-       .card-value {
-            font-size: 18px;
-            font-weight: 500;
-        }
-
-       .status-active { color: var(--accent-green); }
-       .user-name { color: var(--accent-blue); }
-       .traffic-icon { color: var(--accent-orange); }
-
-        /* Руководство */
-       .guide-section {
-            margin-top: 40px;
-        }
-
-       .guide-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-       .platform-select {
-            background: #1a1a1a;
-            color: white;
-            border: none;
-            padding: 8px 15px;
+            padding: 20px;
             border-radius: 20px;
-            font-size: 14px;
+            text-align: left;
         }
 
-       .app-list {
-            display: flex;
-            gap: 15px;
-        }
+       .card h3 { margin: 0 0 10px 0; font-size: 1rem; color: var(--accent-pink); }
+       .card p { margin: 0; font-size: 0.85rem; line-height: 1.4; color: #eee; }
 
-       .app-card {
-            flex: 1;
-            background: var(--card-bg);
-            border-radius: 15px;
-            padding: 15px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border: 2px solid transparent;
-        }
-
-       .app-card.active {
-            border-color: var(--accent-blue);
-        }
-
-       .app-icon {
-            width: 40px;
-            height: 40px;
-            background: #333;
-            border-radius: 10px;
+        /* Виджет чата (Placeholder) */
+       .chat-widget {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 60px;
+            height: 60px;
+            background: #0088cc; /* Цвет Telegram */
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            z-index: 100;
         }
 
-       .app-info h4 {
-            margin: 0;
-            font-size: 14px;
-        }
-
-       .app-info p {
-            margin: 0;
-            font-size: 11px;
-            color: var(--text-dim);
-        }
-
-       .badge-new {
-            background: var(--accent-blue);
-            color: white;
-            font-size: 9px;
-            padding: 2px 6px;
-            border-radius: 4px;
-            text-transform: uppercase;
+       .chat-bubble {
+            position: fixed;
+            bottom: 95px;
+            right: 25px;
+            width: 250px;
+            background: white;
+            color: #333;
+            padding: 15px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            display: none; /* Появится при клике через JS */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
     </style>
 </head>
 <body>
 
-    <div class="mochi-bg"></div>
+    <div class="background"></div>
 
     <div class="container">
         <header>
-            <div class="logo">
-                <div class="logo-icon">🛡️</div>
-                XPNet
-            </div>
-            <div class="menu-btn">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
-                    <rect y="4" width="24" height="2" rx="1"/>
-                    <rect y="11" width="24" height="2" rx="1"/>
-                    <rect y="18" width="24" height="2" rx="1"/>
-                </svg>
-            </div>
+            <div class="logo">🍡</div>
+            <h1>Mochi Community</h1>
+            <p class="subtitle">Уютное место для общения и обмена идеями</p>
+            <a href="https://t.me/your_group" class="main-btn" target="_blank">Вступить в группу</a>
         </header>
 
-        <div class="system-settings">
-            <div class="setting-item">
-                <span>Поддержка</span>
-            </div>
-            <div class="setting-item">
-                <span>🌓 Системная</span>
-                <span>▼</span>
-            </div>
-            <div class="setting-item">
-                <span>🌐 Русский</span>
-                <span>▼</span>
-            </div>
-        </div>
-
-        <div class="subscription-title">Подписка</div>
-        
-        <div class="action-buttons">
-            <div class="btn-action">🔳 QR-код</div>
-            <div class="btn-action">🔗 Скопировать ссылку</div>
-        </div>
-
-        <div class="info-grid">
+        <div class="rules-grid">
             <div class="card">
-                <div class="card-label">👤 Имя</div>
-                <div class="card-value user-name">SnFDbXAN</div>
+                <h3>✨ Атмосфера</h3>
+                <p>Мы за доброе общение и взаимное уважение. Никакого токсика.</p>
             </div>
             <div class="card">
-                <div class="card-label">🟢 Статус</div>
-                <div class="card-value status-active">Активна</div>
+                <h3>📢 Анонсы</h3>
+                <p>Узнавай о новых ивентах и обновлениях первым в нашем канале.</p>
             </div>
             <div class="card">
-                <div class="card-label">📅 Действует</div>
-                <div class="card-value">До 21.04.2026</div>
+                <h3>🤝 Саппорт</h3>
+                <p>Возник вопрос? Напиши в чат справа, и админы ответят.</p>
             </div>
             <div class="card">
-                <div class="card-label">
-                    <span class="traffic-icon">⇅</span> Трафик
-                </div>
-                <div class="card-value">46.93 GB / ∞</div>
-            </div>
-        </div>
-
-        <div class="guide-section">
-            <div class="guide-header">
-                <h3>Руководство</h3>
-                <select class="platform-select">
-                    <option>🤖 Android</option>
-                    <option>🍎 iOS</option>
-                    <option>💻 Windows</option>
-                </select>
-            </div>
-            
-            <p style="color: var(--text-dim); font-size: 12px; margin-bottom: 15px;">ВЫБЕРИТЕ ПРИЛОЖЕНИЕ</p>
-
-            <div class="app-list">
-                <div class="app-card active">
-                    <div class="app-icon">H</div>
-                    <div class="app-info">
-                        <h4>HAPP</h4>
-                        <p>Быстрый и легкий...</p>
-                    </div>
-                    <div style="color: var(--accent-blue); margin-left: auto;">✓</div>
-                </div>
-
-                <div class="app-card">
-                    <div class="app-icon">V2</div>
-                    <div class="app-info">
-                        <span class="badge-new">New</span>
-                        <h4>v2RayTun</h4>
-                        <p>Продвинутый клиент...</p>
-                    </div>
-                </div>
+                <h3>🎨 Творчество</h3>
+                <p>Делись своими работами и получай фидбек от профи.</p>
             </div>
         </div>
     </div>
+
+    <div class="chat-bubble" id="chatBox">
+        👋 Привет! Напиши нам в Telegram, и мы ответим прямо здесь.
+    </div>
+    <div class="chat-widget" onclick="toggleChat()">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="white">
+            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM16.64 15.65C16.39 16.03 15.89 16.14 15.51 15.89L12 13.56L8.49 15.89C8.11 16.14 7.61 16.03 7.36 15.65C7.11 15.27 7.22 14.77 7.6 14.52L11.11 12.19L11.11 8C11.11 7.55 11.47 7.19 11.92 7.19C12.37 7.19 12.73 7.55 12.73 8L12.73 12.19L16.24 14.52C16.62 14.77 16.73 15.27 16.64 15.65Z"/>
+        </svg>
+    </div>
+
+    <script>
+        function toggleChat() {
+            const chat = document.getElementById('chatBox');
+            chat.style.display = chat.style.display === 'block'? 'none' : 'block';
+        }
+        
+        // Для реального чата вставьте сюда скрипт от Intergram или Elfsight
+        // window.intergramId = "YOUR_ID";
+    </script>
 
 </body>
 </html>

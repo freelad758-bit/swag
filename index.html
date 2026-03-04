@@ -3,193 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SWAGA AMBER OS</title>
+    <title>SWAGA GOLD OS</title>
+    <!-- Telegram SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
-            --gold-glow: rgba(255, 204, 0, 0.6);
-            --glass-border: rgba(255, 204, 0, 0.2);
+            --gold: #ffcc00;
+            --glass: rgba(255, 255, 255, 0.03);
         }
 
         body {
-            background-color: #0c0a00;
+            background: #000;
             color: #fff;
-            font-family: -apple-system, system-ui, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
             margin: 0; padding: 0;
             overflow: hidden;
+            height: 100vh;
         }
 
-        /* Настоящие обои на фон */
+        /* Настоящие золотые обои */
         .wallpaper {
             position: fixed;
             inset: 0;
             z-index: -10;
-            background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1964&auto=format&fit=crop');
+            background-image: url('https://images.unsplash.com/photo-1502239608882-93b729c6af43?q=80&w=2070&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
-            filter: brightness(0.3) contrast(1.2);
+            filter: brightness(0.25) contrast(1.1) saturate(1.2);
         }
 
-        .liquid-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: -9;
-            background: radial-gradient(circle at 50% 50%, rgba(255, 191, 0, 0.1), transparent);
-            mix-blend-mode: overlay;
+        /* Эффект супер-стекла */
+        .glass {
+            background: var(--glass);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            border: 1px solid rgba(255, 204, 0, 0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 10px rgba(255, 204, 0, 0.05);
         }
 
-        /* Эффект жидкого светящегося стекла */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.01);
-            backdrop-filter: blur(50px) saturate(200%);
-            -webkit-backdrop-filter: blur(50px) saturate(200%);
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 0 20px rgba(0,0,0,0.5), inset 0 0 15px rgba(255, 204, 0, 0.05);
-            border-radius: 24px;
+        .active-tab-glow {
+            color: var(--gold) !important;
+            filter: drop-shadow(0 0 8px rgba(255, 204, 0, 0.6));
         }
 
-        .glow-active {
-            box-shadow: 0 0 25px rgba(255, 204, 0, 0.3);
-            border-color: rgba(255, 204, 0, 0.6);
-        }
-
-        .nav-bar {
-            position: fixed;
-            bottom: 30px;
-            left: 20px; right: 20px;
-            height: 75px;
-            z-index: 100;
-        }
-
-        .tab-content {
+        .page {
             display: none;
-            height: calc(100vh - 180px);
+            height: calc(100vh - 160px);
             overflow-y: auto;
-            padding-bottom: 100px;
-            scrollbar-width: none;
-        }
-        .tab-content::-webkit-scrollbar { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.4s ease; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .amber-shimmer {
-            background: linear-gradient(90deg, #ffcc00, #ffaa00, #ffcc00);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shimmer 3s linear infinite;
+            padding: 20px;
+            animation: slideUp 0.3s ease-out;
         }
 
-        @keyframes shimmer { to { background-position: 200% center; } }
+        .page.active { display: block; }
 
-        .avatar-ring {
-            padding: 3px;
-            background: linear-gradient(45deg, #ffcc00, transparent);
-            border-radius: 50%;
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
         }
+
+        /* Стили для чата */
+        .idea-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-left: 3px solid var(--gold);
+        }
+
+        input::placeholder { color: rgba(255, 255, 255, 0.3); }
     </style>
 </head>
-<body class="p-5">
+<body>
     <div class="wallpaper"></div>
-    <div class="liquid-overlay"></div>
 
-    <!-- HEADER -->
-    <header class="flex items-center gap-4 mb-8 pt-4">
-        <div class="avatar-ring shadow-[0_0_15px_rgba(255,204,0,0.4)]">
-            <img id="header-avatar" src="" class="w-12 h-12 rounded-full bg-zinc-800 object-cover hidden">
-            <div id="header-placeholder" class="w-12 h-12 rounded-full bg-zinc-900 flex items-center justify-center text-amber-500 font-bold text-xl">?</div>
+    <!-- Шапка -->
+    <header class="flex items-center p-6 gap-4">
+        <div class="w-14 h-14 rounded-full border-2 border-amber-500/50 p-1">
+            <img id="user-pic" src="" class="w-full h-full rounded-full object-cover hidden">
+            <div id="user-initial" class="w-full h-full rounded-full bg-zinc-900 flex items-center justify-center text-xl font-bold text-amber-500">?</div>
         </div>
         <div>
-            <h1 class="text-xl font-black amber-shimmer italic tracking-tighter uppercase leading-none" id="header-name">SWAGA</h1>
-            <p class="text-[9px] font-bold text-amber-500/50 uppercase tracking-[0.3em] mt-1">Liquid OS v4.2</p>
+            <h1 id="user-name-top" class="text-xl font-black italic tracking-tighter text-amber-400">SWAGA GOLD</h1>
+            <p class="text-[9px] uppercase tracking-[0.3em] text-amber-500/60">Amber OS Stable v5.0</p>
         </div>
     </header>
 
-    <!-- ТАБ 1: БАЗА -->
-    <div id="tab-home" class="tab-content active">
-        <div class="glass-card p-6 mb-4">
-            <h2 class="text-amber-500 font-black text-xs uppercase tracking-[0.3em] mb-4">Устав Мочевого Братства</h2>
+    <!-- БАЗА (ПРАВИЛА) -->
+    <div id="home" class="page active">
+        <div class="glass p-6 rounded-[30px]">
+            <h2 class="text-amber-500 font-black text-xs uppercase tracking-[0.3em] mb-4">Золотой Устав</h2>
             <div class="space-y-4 text-sm text-zinc-300">
-                <p class="border-b border-white/5 pb-2"><span class="text-amber-400">●</span> <strong>Политика:</strong> Любой политический контент — это мгновенный бан. Мы вне этого.</p>
-                <p class="border-b border-white/5 pb-2"><span class="text-amber-400">●</span> <strong>Уважение:</strong> Свои не обсуждаются, свои поддерживаются.</p>
-                <p><span class="text-amber-400">●</span> <strong>Идеи:</strong> Каждое предложение фиксируется в базе данных.</p>
+                <p>🚫 <b>Политика:</b> Запрещена в любом виде. Нарушение = бан.</p>
+                <p>🥃 <b>Братство:</b> Уважай выбор каждого участника.</p>
+                <p>💡 <b>Идеи:</b> Предлагай движ в специальном разделе.</p>
             </div>
         </div>
     </div>
 
-    <!-- ТАБ 2: БРИГАДА -->
-    <div id="tab-brigada" class="tab-content">
-        <h2 class="text-center text-[10px] font-black text-zinc-500 uppercase tracking-[0.5em] mb-6">Действующие Лица</h2>
+    <!-- БРИГАДА (СПИСОК) -->
+    <div id="brigada" class="page">
         <div class="space-y-3" id="users-list">
-            <!-- Список участников (заглушка) -->
-            <div class="glass-card p-4 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center text-xs text-amber-500">A</div>
-                    <span class="font-bold text-sm italic">@Admin_Root</span>
-                </div>
-                <span class="text-[8px] bg-amber-500/10 text-amber-500 px-2 py-1 rounded">OWNER</span>
+            <div class="glass p-5 rounded-2xl flex justify-between items-center">
+                <span class="font-bold italic">@Admin_Root</span>
+                <span class="text-[9px] bg-amber-500/20 text-amber-500 px-2 py-1 rounded">BOSS</span>
+            </div>
+            <div class="glass p-5 rounded-2xl flex justify-between items-center">
+                <span class="font-bold italic">@User_Member</span>
+                <span class="text-[9px] bg-zinc-800 text-zinc-400 px-2 py-1 rounded">MEMBER</span>
             </div>
         </div>
     </div>
 
-    <!-- ТАБ 3: ИДЕИ (СТЕНА) -->
-    <div id="tab-ideas" class="tab-content">
-        <div class="flex flex-col h-full">
-            <div id="ideas-feed" class="flex-1 space-y-4 mb-4 pr-1">
-                <!-- Сообщения подгрузятся сюда -->
+    <!-- ИДЕИ (ЧАТ) -->
+    <div id="ideas" class="page">
+        <div id="ideas-container" class="space-y-3 mb-24">
+            <!-- Сообщения будут тут -->
+            <div class="text-center text-zinc-600 text-[10px] mt-10">ПОДКЛЮЧЕНИЕ К ОБЛАКУ...</div>
+        </div>
+        
+        <div class="fixed bottom-28 left-6 right-6 flex gap-2">
+            <div class="glass flex-1 rounded-2xl px-4 flex items-center">
+                <input type="text" id="idea-input" class="bg-transparent w-full h-12 text-sm outline-none" placeholder="Твоя идея...">
             </div>
-            <div class="glass-card p-3 flex gap-2">
-                <input type="text" id="idea-input" placeholder="Предложи что-то золотое..." class="bg-transparent flex-1 px-4 text-sm outline-none border-none">
-                <button onclick="sendIdea()" class="w-12 h-12 bg-amber-500 rounded-2xl flex items-center justify-center text-black active:scale-90 transition-all shadow-[0_0_15px_rgba(255,204,0,0.5)]">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-                </button>
-            </div>
+            <button onclick="publishIdea()" class="w-12 h-12 bg-amber-500 rounded-2xl flex items-center justify-center shadow-lg shadow-amber-500/20 active:scale-90 transition-all">
+                🚀
+            </button>
         </div>
     </div>
 
-    <!-- ТАБ 4: ПРОФИЛЬ -->
-    <div id="tab-profile" class="tab-content">
-        <div class="glass-card p-8 text-center relative overflow-hidden">
-            <div class="absolute top-0 right-0 p-4 opacity-5 text-4xl">🥃</div>
-            <div class="w-24 h-24 rounded-[30px] mx-auto mb-4 p-1 bg-gradient-to-tr from-amber-500 to-transparent">
-                <img id="prof-img" src="" class="w-full h-full rounded-[26px] object-cover hidden">
-                <div id="prof-placeholder" class="w-full h-full rounded-[26px] bg-zinc-900 flex items-center justify-center text-4xl text-amber-500">?</div>
+    <!-- ПРОФИЛЬ -->
+    <div id="profile" class="page">
+        <div class="glass p-8 rounded-[40px] text-center">
+            <div class="w-24 h-24 mx-auto mb-4 border-2 border-amber-500 p-1 rounded-3xl">
+                <img id="prof-pic" src="" class="w-full h-full rounded-2xl object-cover hidden">
+                <div id="prof-initial" class="w-full h-full rounded-2xl bg-zinc-900 flex items-center justify-center text-4xl text-amber-500 font-bold">?</div>
             </div>
-            <h2 id="prof-name" class="text-2xl font-black amber-shimmer mb-1">USER_NAME</h2>
-            <p id="prof-user" class="text-xs text-zinc-500 uppercase tracking-widest mb-6">@username</p>
-            
-            <div class="grid grid-cols-2 gap-3 border-t border-white/5 pt-6">
-                <div class="bg-white/5 p-4 rounded-3xl text-left border border-white/5">
-                    <p class="text-[9px] text-zinc-500 uppercase font-black">Статус</p>
-                    <p class="text-sm font-bold text-amber-500">Элита</p>
-                </div>
-                <div class="bg-white/5 p-4 rounded-3xl text-left border border-white/5">
-                    <p class="text-[9px] text-zinc-500 uppercase font-black">ID Сессии</p>
-                    <p id="prof-id" class="text-[10px] font-mono text-white">#0000</p>
-                </div>
-            </div>
+            <h2 id="prof-name" class="text-2xl font-black text-amber-400">БРОДЯГА</h2>
+            <p id="prof-tag" class="text-xs text-zinc-500 mt-1 uppercase tracking-widest">Участник</p>
         </div>
     </div>
 
-    <!-- NAVIGATION BAR -->
-    <nav class="nav-bar glass-card flex justify-around items-center px-2">
-        <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center gap-1 text-amber-500 transition-all">
+    <!-- НАВИГАЦИЯ -->
+    <nav class="fixed bottom-6 left-6 right-6 h-20 glass rounded-[30px] flex justify-around items-center z-[100]">
+        <button onclick="showTab('home')" class="nav-item flex flex-col items-center gap-1 active-tab-glow">
             <span class="text-2xl">🏛️</span>
-            <span class="text-[8px] font-black uppercase">База</span>
+            <span class="text-[8px] font-bold uppercase">База</span>
         </button>
-        <button onclick="switchTab('brigada')" id="nav-brigada" class="flex flex-col items-center gap-1 text-zinc-600 transition-all">
+        <button onclick="showTab('brigada')" class="nav-item flex flex-col items-center gap-1 text-zinc-600">
             <span class="text-2xl">👥</span>
-            <span class="text-[8px] font-black uppercase">Бригада</span>
+            <span class="text-[8px] font-bold uppercase">Бригада</span>
         </button>
-        <button onclick="switchTab('ideas')" id="nav-ideas" class="flex flex-col items-center gap-1 text-zinc-600 transition-all">
+        <button onclick="showTab('ideas')" class="nav-item flex flex-col items-center gap-1 text-zinc-600">
             <span class="text-2xl">💭</span>
-            <span class="text-[8px] font-black uppercase">Идеи</span>
+            <span class="text-[8px] font-bold uppercase">Идеи</span>
         </button>
-        <button onclick="switchTab('profile')" id="nav-profile" class="flex flex-col items-center gap-1 text-zinc-600 transition-all">
+        <button onclick="showTab('profile')" class="nav-item flex flex-col items-center gap-1 text-zinc-600">
             <span class="text-2xl">🥃</span>
-            <span class="text-[8px] font-black uppercase">Твой</span>
+            <span class="text-[8px] font-bold uppercase">Твой</span>
         </button>
     </nav>
 
@@ -198,91 +170,90 @@
         import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
+        // Firebase Config
         const firebaseConfig = JSON.parse(__firebase_config);
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'swaga-gold-v4';
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'swaga-stable';
 
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
-        tg.setHeaderColor('#0c0a00');
 
+        // Авторизация
         signInAnonymously(auth);
 
-        // Интеграция с Telegram User Data
+        // Получение данных пользователя ТГ
         const user = tg.initDataUnsafe?.user;
-        if (user) {
-            const fullName = (user.first_name + ' ' + (user.last_name || '')).trim();
-            document.getElementById('header-name').innerText = user.first_name.toUpperCase();
-            document.getElementById('prof-name').innerText = fullName;
-            document.getElementById('prof-user').innerText = user.username ? '@' + user.username : 'private_user';
-            document.getElementById('prof-id').innerText = '#' + user.id.toString().slice(-4);
+        if(user) {
+            const name = user.first_name.toUpperCase();
+            document.getElementById('user-name-top').innerText = name;
+            document.getElementById('prof-name').innerText = name;
+            document.getElementById('prof-tag').innerText = user.username ? '@' + user.username : 'ID: ' + user.id;
 
-            if (user.photo_url) {
-                document.getElementById('header-avatar').src = user.photo_url;
-                document.getElementById('header-avatar').classList.remove('hidden');
-                document.getElementById('header-placeholder').classList.add('hidden');
-                
-                document.getElementById('prof-img').src = user.photo_url;
-                document.getElementById('prof-img').classList.remove('hidden');
-                document.getElementById('prof-placeholder').classList.add('hidden');
+            if(user.photo_url) {
+                document.getElementById('user-pic').src = user.photo_url;
+                document.getElementById('user-pic').classList.remove('hidden');
+                document.getElementById('user-initial').classList.add('hidden');
+                document.getElementById('prof-pic').src = user.photo_url;
+                document.getElementById('prof-pic').classList.remove('hidden');
+                document.getElementById('prof-initial').classList.add('hidden');
             } else {
-                const letter = user.first_name.charAt(0).toUpperCase();
-                document.getElementById('header-placeholder').innerText = letter;
-                document.getElementById('prof-placeholder').innerText = letter;
+                const initial = name.charAt(0);
+                document.getElementById('user-initial').innerText = initial;
+                document.getElementById('prof-initial').innerText = initial;
             }
         }
 
         // Переключение табов
-        window.switchTab = (id) => {
-            tg.HapticFeedback.impactOccurred('medium');
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.getElementById('tab-' + id).classList.add('active');
-            
-            document.querySelectorAll('.nav-bar button').forEach(b => {
-                b.classList.remove('text-amber-500', 'glow-active');
-                b.classList.add('text-zinc-600');
+        window.showTab = (id) => {
+            tg.HapticFeedback.impactOccurred('light');
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+
+            document.querySelectorAll('.nav-item').forEach(n => {
+                n.classList.remove('active-tab-glow');
+                n.classList.add('text-zinc-600');
             });
-            const activeBtn = document.getElementById('nav-' + id);
-            activeBtn.classList.remove('text-zinc-600');
-            activeBtn.classList.add('text-amber-500', 'glow-active');
+            const activeNav = document.querySelector(`button[onclick="showTab('${id}')"]`);
+            activeNav.classList.add('active-tab-glow');
+            activeNav.classList.remove('text-zinc-600');
         };
 
-        // Живой чат идей
-        const feed = document.getElementById('ideas-feed');
-        const qIdeas = query(collection(db, 'artifacts', appId, 'public', 'data', 'wall'), orderBy('time', 'desc'));
+        // Загрузка идей в реальном времени
+        const container = document.getElementById('ideas-container');
+        const q = query(collection(db, 'artifacts', appId, 'public', 'data', 'feed'), orderBy('time', 'desc'));
 
-        onSnapshot(qIdeas, (snap) => {
-            feed.innerHTML = '';
+        onSnapshot(q, (snap) => {
+            container.innerHTML = '';
+            if(snap.empty) {
+                container.innerHTML = '<div class="text-center text-zinc-500 text-[10px] mt-10 uppercase tracking-widest italic">Будь первым, кто нальет идею</div>';
+            }
             snap.forEach(doc => {
                 const d = doc.data();
-                const card = document.createElement('div');
-                card.className = 'glass-card p-4 animate-fadeIn';
-                card.innerHTML = `
-                    <div class="flex items-center gap-3 mb-2">
-                        <div class="w-6 h-6 rounded-full bg-amber-500/20 flex items-center justify-center text-[10px] text-amber-500 font-bold">
-                            ${d.author ? d.author.charAt(0) : '?'}
-                        </div>
-                        <span class="text-[10px] font-black text-amber-500 uppercase">@${d.author || 'anon'}</span>
-                        <span class="text-[8px] text-zinc-600 ml-auto">${d.time ? new Date(d.time.toDate()).toLocaleTimeString() : '...'}</span>
+                const div = document.createElement('div');
+                div.className = 'idea-card';
+                div.innerHTML = `
+                    <div class="flex justify-between items-center mb-1 text-[10px]">
+                        <span class="font-bold text-amber-500">@${d.author || 'anon'}</span>
+                        <span class="opacity-30 text-[8px]">${d.time ? new Date(d.time.toDate()).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : '...'}</span>
                     </div>
-                    <p class="text-xs text-zinc-200 leading-relaxed">${d.text}</p>
+                    <div class="text-xs text-zinc-200">${d.text}</div>
                 `;
-                feed.appendChild(card);
+                container.appendChild(div);
             });
         });
 
-        // Отправка идей
-        window.sendIdea = async () => {
+        // Публикация идеи
+        window.publishIdea = async () => {
             const input = document.getElementById('idea-input');
             const val = input.value.trim();
-            if (!val) return;
+            if(!val) return;
 
             tg.HapticFeedback.notificationOccurred('success');
             try {
-                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'wall'), {
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'feed'), {
                     text: val,
                     author: user?.username || user?.first_name || 'Anonymous',
                     time: serverTimestamp()
@@ -295,4 +266,3 @@
     </script>
 </body>
 </html>
-
